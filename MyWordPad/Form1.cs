@@ -281,12 +281,6 @@ namespace MyWordPad
                 richTextBox1.SelectionIndent = 30;
                 richTextBox1.SelectionHangingIndent = -20;
             }
-            else
-            {
-                richTextBox1.SelectionBullet = false;
-                richTextBox1.SelectionIndent = 0;
-                richTextBox1.SelectionHangingIndent = 0;
-            }
 
             // di chuyển dấu mũ đến đầu vùng bị ảnh hưởng và xóa vùng chọn
             richTextBox1.SelectionStart = startChar;
@@ -345,6 +339,72 @@ namespace MyWordPad
         private void rightToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.SelectionAlignment = HorizontalAlignment.Right;
+        }
+
+        private void normalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FontStyle style = richTextBox1.SelectionFont.Style;
+            style |= FontStyle.Regular; //thêm regular
+            richTextBox1.SelectionFont = new Font(richTextBox1.SelectionFont, style);
+        }
+
+        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Mở rộng lựa chọn thành các dòng đầy đủ (paragraphs) để áp dụng dấu đầu dòng cho mỗi đoạn
+            int selStart = richTextBox1.SelectionStart;
+            int selLength = richTextBox1.SelectionLength;
+
+            int startLine = richTextBox1.GetLineFromCharIndex(selStart);
+            int endLine = richTextBox1.GetLineFromCharIndex(selStart + Math.Max(0, selLength - 1));
+
+            int startChar = richTextBox1.GetFirstCharIndexFromLine(startLine);
+            int endChar;
+            if (endLine < richTextBox1.Lines.Length - 1)
+            {
+                endChar = richTextBox1.GetFirstCharIndexFromLine(endLine + 1);
+            }
+            else
+            {
+                endChar = richTextBox1.TextLength;
+            }
+
+            // áp dụng lựa chọn mở rộng
+            richTextBox1.SelectionStart = startChar;
+            richTextBox1.SelectionLength = Math.Max(0, endChar - startChar);
+
+            // chuyển đổi dấu đầu dòng cho các đoạn văn đã chọn
+            if (richTextBox1.SelectionBullet)
+            {
+                richTextBox1.SelectionBullet = false;
+                richTextBox1.SelectionIndent = 0;
+                richTextBox1.SelectionHangingIndent = 0;
+            }
+
+            // di chuyển dấu mũ đến đầu vùng bị ảnh hưởng và xóa vùng chọn
+            richTextBox1.SelectionStart = startChar;
+            richTextBox1.SelectionLength = 0;
+            richTextBox1.Focus();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("WordPad - Text Editor\n\n" +
+        "A simple yet powerful rich text editor built with Windows Forms.\n\n" +
+        "Features:\n" +
+        "• Rich text formatting (Bold, Italic, Underline, Strikeout)\n" +
+        "• Font and color customization\n" +
+        "• Paragraph alignment and indentation\n" +
+        "• Bullets and numbering\n" +
+        "• Find and Replace\n" +
+        "• File operations (New, Open, Save, Print)\n\n",
+        "About WordPad",
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Information);
+        }
+
+        private void groupInformationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("WordPad - Nhóm 3 - 23BITV02 - NIIE");
         }
     }
 }

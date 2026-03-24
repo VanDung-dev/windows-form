@@ -54,11 +54,11 @@ Dự án MyWordPad là ứng dụng soạn thảo văn bản Windows Forms với
 ---
 
 ### Dev 5: Features & UI (Hoàng)
-- [ ] **Page Color**: Sửa handler, dùng ColorDialog đổi BackColor của RichTextBox
-- [ ] **Normal**: Bỏ tất cả định dạng (Font, Color, Bold, Italic, Underline)
-- [ ] **Remove Bullets**: Xóa bullet khỏi văn bản
-- [ ] **About**: Hiển thị thông tin ứng dụng (MessageBox)
-- [ ] **Group Information**: Hiển thị thông tin nhóm (MSSV, Họ tên, Lớp)
+- [X] **Page Color**: Sửa handler, dùng ColorDialog đổi BackColor của RichTextBox
+- [X] **Normal**: Bỏ tất cả định dạng (Font, Color, Bold, Italic, Underline)
+- [X] **Remove Bullets**: Xóa bullet khỏi văn bản
+- [X] **About**: Hiển thị thông tin ứng dụng (MessageBox)
+- [X] **Group Information**: Hiển thị thông tin nhóm (MSSV, Họ tên, Lớp)
 - [ ] **Print**: In tài liệu (sử dụng PrintDocument)
 - [ ] **ToolStrip Buttons**: Gán event handlers cho các nút trên toolbar
 
