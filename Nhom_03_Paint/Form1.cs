@@ -588,17 +588,23 @@ namespace Nhom_03_Paint
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            
             drawingManager.DrawAll(e.Graphics, panel1.Width, panel1.Height);
 
             var selectedShape = SelectedShape;
             if (selectedShape != null && !(selectedShape is TextShape))
             {
                 Point[] handles = GetResizeHandles(selectedShape);
-                foreach (var handle in handles)
+                using (Brush handleBrush = new SolidBrush(Color.White))
+                using (Pen handlePen = new Pen(Color.Black))
                 {
-                    Rectangle handleRect = new Rectangle(handle.X - 5, handle.Y - 5, 10, 10);
-                    e.Graphics.FillRectangle(new SolidBrush(Color.White), handleRect);
-                    e.Graphics.DrawRectangle(new Pen(Color.Black), handleRect);
+                    foreach (var handle in handles)
+                    {
+                        Rectangle handleRect = new Rectangle(handle.X - 5, handle.Y - 5, 10, 10);
+                        e.Graphics.FillRectangle(handleBrush, handleRect);
+                        e.Graphics.DrawRectangle(handlePen, handleRect);
+                    }
                 }
             }
         }
