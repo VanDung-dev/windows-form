@@ -26,6 +26,9 @@ namespace Nhom_03_Paint
         private Point originalDelta = Point.Empty;
         private Point lastEndPoint = Point.Empty;
 
+        // Biến lưu trữ hình được sao chép
+        private Shape copiedShape = null;
+
         // Biến theo dõi trạng thái file ảnh
         private string currentFilePath = null;
         private System.Drawing.Imaging.ImageFormat currentImageFormat = null;
@@ -294,6 +297,79 @@ namespace Nhom_03_Paint
         {
             if (drawingManager.DeleteSelectedShape())
             {
+                MarkAsChanged();
+                panel1.Invalidate();
+            }
+        }
+
+        public void toolCopy_Click(object sender, EventArgs e)
+        {
+            Shape selectedShape = SelectedShape;
+            if (selectedShape != null)
+            {
+                // Tạo bản sao clone của hình được chọn
+                copiedShape = drawingManager.CloneShape(selectedShape);
+                // Bỏ chọn hình gốc sau khi sao chép
+                ClearSelection();
+                panel1.Invalidate();
+            }
+        }
+
+        public void toolPaste_Click(object sender, EventArgs e)
+        {
+            if (copiedShape != null)
+            {
+                // Tạo bản sao mới để dán (tạo instance mới mỗi lần dán)
+                Shape pastedShape = drawingManager.CloneShape(copiedShape);
+                
+                // Dịch chuyển hình dán đi một khoảng nhỏ để phân biệt với bản gốc
+                int offsetX = 15;
+                int offsetY = 15;
+                
+                pastedShape.StartPoint = new Point(
+                    pastedShape.StartPoint.X + offsetX,
+                    pastedShape.StartPoint.Y + offsetY
+                );
+                pastedShape.EndPoint = new Point(
+                    pastedShape.EndPoint.X + offsetX,
+                    pastedShape.EndPoint.Y + offsetY
+                );
+
+                // Bỏ chọn tất cả các hình khác
+                ClearSelection();
+                
+                // Đặt trạng thái được chọn cho hình vừa dán
+                pastedShape.IsSelected = true;
+                
+                // Thêm hình mới vào DrawingManager
+                drawingManager.AddShape(pastedShape);
+                
+                // Cập nhật trạng thái và vẽ lại
+                MarkAsChanged();
+                panel1.Invalidate();
+                
+                // Cập nhật lại vị trí hình gốc trong clipboard để lần dán tiếp theo lại dịch chuyển thêm
+                copiedShape.StartPoint = new Point(
+                    copiedShape.StartPoint.X + offsetX,
+                    copiedShape.StartPoint.Y + offsetY
+                );
+                copiedShape.EndPoint = new Point(
+                    copiedShape.EndPoint.X + offsetX,
+                    copiedShape.EndPoint.Y + offsetY
+                );
+            }
+        }
+
+        public void toolCut_Click(object sender, EventArgs e)
+        {
+            Shape selectedShape = SelectedShape;
+            if (selectedShape != null)
+            {
+                // Sao chép vào bộ nhớ tạm
+                copiedShape = drawingManager.CloneShape(selectedShape);
+                // Xóa hình gốc khỏi canvas
+                drawingManager.DeleteSelectedShape();
+                // Cập nhật trạng thái và vẽ lại
                 MarkAsChanged();
                 panel1.Invalidate();
             }

@@ -154,7 +154,7 @@ namespace Nhom_03_Paint
             return clone;
         }
 
-        private Shape CloneShape(Shape source)
+        public Shape CloneShape(Shape source)
         {
             Shape clone = null;
             switch (source)
