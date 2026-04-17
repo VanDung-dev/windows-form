@@ -8,5 +8,9 @@ namespace QuanLyThuVien.Enums
 {
     internal enum BookStatus
     {
+        OK,
+        Muon,
+        Hong,
+        Mat
     }
 }
