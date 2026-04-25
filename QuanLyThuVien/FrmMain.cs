@@ -29,7 +29,7 @@ namespace QuanLyThuVien
         {
             foreach (Form frm in this.MdiChildren)
             {
-                if(frm is FrmLogin)
+                if (frm is FrmLogin)
                 {
                     frm.Activate();
                     return;
@@ -53,8 +53,8 @@ namespace QuanLyThuVien
                     }
                 }
                 FrmStaff frmStaff = new FrmStaff();
-                frmStaff.MdiParent = this;
-                frmStaff.Show();
+            frmStaff.MdiParent = this;
+            frmStaff.Show();
             }
         }
 
@@ -208,7 +208,7 @@ namespace QuanLyThuVien
         private void CaiDat_Click(object sender, EventArgs e)
         {
             if (CurrentUser.BoPhan == "Ban Giám Đốc") //Oke
-            {   
+            {
                 foreach (Form frm in this.MdiChildren)
                 {
                     if (frm is FrmSettings)
@@ -219,10 +219,10 @@ namespace QuanLyThuVien
                 }
                 FrmSettings frmSettings = new FrmSettings();
                 frmSettings.MdiParent = this;
-                frmSettings.Show(); 
+                frmSettings.Show();
             }
         }
-        
+
 
         private void TroGiupToolStripMenuItem_Click(object sender, EventArgs e)
         {
