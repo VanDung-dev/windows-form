@@ -1,4 +1,4 @@
-﻿namespace QuanLyThuVien
+namespace QuanLyThuVien
 {
     partial class FrmStaff
     {
@@ -143,6 +143,7 @@
             // 
             this.cboBoPhan.FormattingEnabled = true;
             this.cboBoPhan.Items.AddRange(new object[] {
+            "Quản Trị",
             "Ban Giám Đốc",
             "Thủ Quỹ",
             "Thủ Kho",

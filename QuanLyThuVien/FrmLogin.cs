@@ -82,16 +82,20 @@ namespace QuanLyThuVien
 
         public static class Permission
         {
+            public static bool IsAdmin()
+                => CurrentUser.BoPhan == "Quản Trị";
+
             public static bool IsGiamDoc()
                 => CurrentUser.BoPhan == "Ban Giám Đốc";
-            public static bool IsPhoGiamDoc()
-                => CurrentUser.ChucVu == "Thủ Quỹ";
 
             public static bool IsTruongPhong()
-                => CurrentUser.ChucVu == "Thủ Kho";
-            public static bool IsPhoPhong()
-                => CurrentUser.ChucVu == "Thủ Thư";
+                => CurrentUser.BoPhan == "Thủ Kho";
 
+            public static bool IsPhoPhong()
+                => CurrentUser.BoPhan == "Thủ Thư";
+
+            public static bool IsThuQuy()
+                => CurrentUser.BoPhan == "Thủ Quỹ";
         }
     }
 }
