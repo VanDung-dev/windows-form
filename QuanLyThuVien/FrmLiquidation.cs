@@ -35,9 +35,9 @@ namespace QuanLyThuVien
         private void FrmLiquidation_Load(object sender, EventArgs e)
         {
             cboLyDo.Items.Clear();
-            cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.Lost, Text = "Lost" });
-            cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.Damaged, Text = "Damaged" });
-            cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.LostByUser, Text = "LostByUser" });
+            cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.Lost, Text = "Mất" });
+            cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.Damaged, Text = "Hỏng" });
+            cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.LostByUser, Text = "Mất do người dùng" });
             if (cboLyDo.Items.Count > 0) cboLyDo.SelectedIndex = 0;
 
             dgvBooks.Columns.Clear();
@@ -216,36 +216,45 @@ namespace QuanLyThuVien
             var result = MessageBox.Show($"Ban co chac chan muon thanh ly sach ma {id}?", "Xac nhan", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result != DialogResult.Yes) return;
 
-            try
-            {
-                string lydo = null;
-                if (cboLyDo.SelectedItem is ReasonItem ri) lydo = ri.Value.ToString();
-
-                try
+try
                 {
-                    string insertSql = @"
-                        IF EXISTS (SELECT 1 FROM ThanhLySach WHERE IDSach = @id)
-                        BEGIN
-                            UPDATE ThanhLySach SET NgayThanhLy = @ngay, LyDoThanhLy = @lydo WHERE IDSach = @id
-                        END
-                        ELSE
-                        BEGIN
-                            INSERT INTO ThanhLySach (IDSach, NgayThanhLy, LyDoThanhLy) VALUES (@id, @ngay, @lydo)
-                        END";
-                    var insParams = new SqlParameter[] {
-                        new SqlParameter("@id", id),
-                        new SqlParameter("@ngay", DateTime.Now.Date),
-                        new SqlParameter("@lydo", lydo ?? (object)DBNull.Value)
-                    };
-                    DatabaseHelper.ExecuteNonQuery(insertSql, insParams);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Loi khi luu phieu thanh ly: " + ex.Message, "Loi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                    string lydo = null;
+                    if (cboLyDo.SelectedItem is ReasonItem ri) 
+                        lydo = ri.Value.GetDisplayName();
 
-                string newStatus = lydo ?? "Damaged";
+                    try
+                    {
+                        string insertSql = @"
+                            IF EXISTS (SELECT 1 FROM ThanhLySach WHERE IDSach = @id)
+                            BEGIN
+                                UPDATE ThanhLySach SET NgayThanhLy = @ngay, LyDoThanhLy = @lydo WHERE IDSach = @id
+                            END
+                            ELSE
+                            BEGIN
+                                INSERT INTO ThanhLySach (IDSach, NgayThanhLy, LyDoThanhLy) VALUES (@id, @ngay, @lydo)
+                            END";
+                        var insParams = new SqlParameter[] {
+                            new SqlParameter("@id", id),
+                            new SqlParameter("@ngay", DateTime.Now.Date),
+                            new SqlParameter("@lydo", lydo ?? (object)DBNull.Value)
+                        };
+                        DatabaseHelper.ExecuteNonQuery(insertSql, insParams);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Loi khi luu phieu thanh ly: " + ex.Message, "Loi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    string newStatus;
+                    if (cboLyDo.SelectedItem is ReasonItem reasonItem)
+                    {
+                        newStatus = reasonItem.Value == LiquidationReason.Damaged ? "Hỏng" : "Mất";
+                    }
+                    else
+                    {
+                        newStatus = "Hỏng";
+                    }
 
                 string updateSql = "UPDATE ThongTinSach SET TinhTrang = @t WHERE IDSach = @id";
                 var p = new SqlParameter[] {
