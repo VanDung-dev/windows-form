@@ -62,6 +62,35 @@ namespace QuanLyThuVien
                     return;
                 }
 
+                // Kiểm tra trùng ID
+                string checkSql = "SELECT COUNT(*) FROM HoSoNhanVien WHERE IDNhanVien = @ID";
+                int count = Convert.ToInt32(DatabaseHelper.ExecuteScalar(checkSql, new SqlParameter[] { 
+                    new SqlParameter("@ID", cboidnhanvien.Text.Trim()) 
+                }));
+                if (count > 0)
+                {
+                    MessageBox.Show("Mã nhân viên đã tồn tại!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Kiểm tra BoPhan hợp lệ
+                string selectedBoPhan = cboBoPhan.SelectedItem?.ToString() ?? "";
+                string[] validBoPhan = { "Quản Trị", "Ban Giám Đốc", "Thủ Quỹ", "Thủ Kho", "Thủ Thư" };
+                if (!validBoPhan.Contains(selectedBoPhan))
+                {
+                    MessageBox.Show("Bộ phận không hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Kiểm tra ChucVu hợp lệ
+                string selectedChucVu = cboChucVu.SelectedItem?.ToString() ?? "";
+                string[] validChucVu = { "Giám Đốc", "Phó Giám Đốc", "Trưởng Phòng", "Phó Phòng", "Nhân Viên" };
+                if (!validChucVu.Contains(selectedChucVu))
+                {
+                    MessageBox.Show("Chức vụ không hợp lệ!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 string sql = "INSERT INTO HoSoNhanVien (IDNhanVien, HoTen, NgaySinh, DiaChi, DienThoai, BangCap, BoPhan, ChucVu, MatKhau) " +
                              "VALUES (@ID, @HoTen, @NgaySinh, @DiaChi, @DienThoai, @BangCap, @BoPhan, @ChucVu, @MatKhau)";
 
@@ -72,8 +101,8 @@ namespace QuanLyThuVien
                     new SqlParameter("@DiaChi", cboDiaChi.Text.Trim()),
                     new SqlParameter("@DienThoai", cboSDT.Text.Trim()),
                     new SqlParameter("@BangCap", cboBangCap.SelectedItem?.ToString() ?? ""),
-                    new SqlParameter("@BoPhan", cboBoPhan.SelectedItem?.ToString() ?? ""),
-                    new SqlParameter("@ChucVu", cboChucVu.SelectedItem?.ToString() ?? ""),
+                    new SqlParameter("@BoPhan", selectedBoPhan),
+                    new SqlParameter("@ChucVu", selectedChucVu),
                     new SqlParameter("@MatKhau", cboMatKhau.Text.Trim())
                 };
 

@@ -20,14 +20,19 @@ namespace QuanLyThuVien.Enums
             switch (reason)
             {
                 case LiquidationReason.Lost:
-                    return "Lost";
+                    return "Mất";
                 case LiquidationReason.Damaged:
-                    return "Damaged";
+                    return "Hỏng";
                 case LiquidationReason.LostByUser:
-                    return "LostByUser";
+                    return "Mất do người dùng";
                 default:
                     return reason.ToString();
             }
+        }
+
+        public static string ToDbValue(this LiquidationReason reason)
+        {
+            return reason.GetDisplayName();
         }
     }
 }

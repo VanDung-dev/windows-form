@@ -1,4 +1,4 @@
-﻿namespace QuanLyThuVien
+namespace QuanLyThuVien
 {
     partial class FrmLogin
     {
@@ -82,6 +82,7 @@
             this.matkhau.Location = new System.Drawing.Point(288, 193);
             this.matkhau.Margin = new System.Windows.Forms.Padding(4);
             this.matkhau.Name = "matkhau";
+            this.matkhau.PasswordChar = '*';
             this.matkhau.Size = new System.Drawing.Size(440, 22);
             this.matkhau.TabIndex = 4;
             // 

@@ -84,18 +84,41 @@ namespace QuanLyThuVien
 
             try
             {
-                // Kiểm tra loại độc giả (Chặn Blacklist)
+                string readerID = txtReaderID.Text.Trim();
+
+                // Kiểm tra loại độc giả (Chặn Blacklist và Graylist)
                 string queryType = "SELECT LoaiDocGia FROM TheDocGia WHERE IDDocGia = @ID";
-                object typeObj = DatabaseHelper.ExecuteScalar(queryType, new SqlParameter[] { new SqlParameter("@ID", txtReaderID.Text) });
-                if (typeObj != null && typeObj.ToString().Trim() == "Blacklist")
+                object typeObj = DatabaseHelper.ExecuteScalar(queryType, new SqlParameter[] { new SqlParameter("@ID", readerID) });
+                if (typeObj == null)
+                {
+                    MessageBox.Show("Không tìm thấy thông tin độc giả!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                
+                string loaiDocGia = typeObj.ToString().Trim();
+                if (loaiDocGia == "Blacklist")
                 {
                     MessageBox.Show("Độc giả đang nằm trong danh sách đen (Blacklist) và không thể mượn sách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    return;
+                }
+                if (loaiDocGia == "Graylist")
+                {
+                    MessageBox.Show("Độc giả đang trong danh sách cảnh báo (Graylist). Vui lòng thanh toán nợ trước khi mượn sách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // Kiểm tra nợ chưa trả
+                string queryDebt = "SELECT TienNo FROM TheDocGia WHERE IDDocGia = @ID";
+                object debtObj = DatabaseHelper.ExecuteScalar(queryDebt, new SqlParameter[] { new SqlParameter("@ID", readerID) });
+                if (debtObj != null && Convert.ToDecimal(debtObj) > 0)
+                {
+                    MessageBox.Show($"Độc giả có nợ {Convert.ToDecimal(debtObj):N0} VNĐ. Vui lòng thanh toán trước khi mượn sách!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 // QĐ2: Kiểm tra thời hạn thẻ (6 tháng)
                 string queryCheckCard = "SELECT NgayLap FROM TheDocGia WHERE IDDocGia = @ID";
-                object regDateObj = DatabaseHelper.ExecuteScalar(queryCheckCard, new SqlParameter[] { new SqlParameter("@ID", txtReaderID.Text) });
+                object regDateObj = DatabaseHelper.ExecuteScalar(queryCheckCard, new SqlParameter[] { new SqlParameter("@ID", readerID) });
                 if (regDateObj == null)
                 {
                     MessageBox.Show("Không tìm thấy thông tin độc giả!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -111,7 +134,7 @@ namespace QuanLyThuVien
                 // QĐ5: Kiểm tra số lượng sách đang mượn (Max 5)
                 string queryCount = "SELECT COUNT(*) FROM ChiTietMuon CT JOIN PhieuMuon PM ON CT.IDPhieuMuon = PM.IDPhieuMuon " +
                                     "WHERE PM.IDNguoiMuon = @ReaderID AND CT.NgayTra IS NULL";
-                int currentlyBorrowed = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryCount, new SqlParameter[] { new SqlParameter("@ReaderID", txtReaderID.Text) }));
+                int currentlyBorrowed = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryCount, new SqlParameter[] { new SqlParameter("@ReaderID", readerID) }));
                 int newBooks = dgvBooks.SelectedRows.Count;
 
                 if (currentlyBorrowed + newBooks > 5)
@@ -120,38 +143,52 @@ namespace QuanLyThuVien
                     return;
                 }
 
-                string phieuMuonID = "PM" + DateTime.Now.ToString("yyyyMMddHHmmss").Substring(8);
+                // Sử dụng Transaction để tránh race condition
+                string phieuMuonID = "PM" + DateTime.Now.ToString("yyyyMMddHHmmss");
                 
-                // 1. Insert into PhieuMuon
-                string queryPhieu = "INSERT INTO PhieuMuon (IDPhieuMuon, IDNguoiMuon) VALUES (@ID, @ReaderID)";
-                SqlParameter[] paramsPhieu = {
-                    new SqlParameter("@ID", phieuMuonID),
-                    new SqlParameter("@ReaderID", txtReaderID.Text)
-                };
-                DatabaseHelper.ExecuteNonQuery(queryPhieu, paramsPhieu);
-
-                // 2. Insert into ChiTietMuon for each selected book
-                foreach (DataGridViewRow row in dgvBooks.SelectedRows)
+                DatabaseHelper.ExecuteWithTransaction(cmd =>
                 {
-                    string sachID = row.Cells["IDSach"].Value.ToString();
-                    string ctID = "CT" + DateTime.Now.Ticks.ToString().Substring(10);
-                    
-                    string queryCT = "INSERT INTO ChiTietMuon (IDChiTietMuon, IDPhieuMuon, IDSach, NgayMuon, HanTra, TinhTrangTra) " +
-                                     "VALUES (@CTID, @PMID, @SachID, @NgayMuon, @HanTra, N'Đang mượn')";
-                    
-                    SqlParameter[] paramsCT = {
-                        new SqlParameter("@CTID", ctID),
-                        new SqlParameter("@PMID", phieuMuonID),
-                        new SqlParameter("@SachID", sachID),
-                        new SqlParameter("@NgayMuon", dtpBorrowDate.Value),
-                        new SqlParameter("@HanTra", dtpBorrowDate.Value.AddDays(4)), // QĐ5: Mượn trong 4 ngày
-                    };
-                    DatabaseHelper.ExecuteNonQuery(queryCT, paramsCT);
+                    // 1. Insert into PhieuMuon
+                    cmd.CommandText = "INSERT INTO PhieuMuon (IDPhieuMuon, IDNguoiMuon) VALUES (@ID, @ReaderID)";
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@ID", phieuMuonID);
+                    cmd.Parameters.AddWithValue("@ReaderID", readerID);
+                    cmd.ExecuteNonQuery();
 
-                    // Update Book status
-                    string queryUpdateBook = "UPDATE ThongTinSach SET TinhTrang = N'Đang mượn' WHERE IDSach = @SachID";
-                    DatabaseHelper.ExecuteNonQuery(queryUpdateBook, new SqlParameter[] { new SqlParameter("@SachID", sachID) });
-                }
+                    // 2. Insert into ChiTietMuon for each selected book
+                    foreach (DataGridViewRow row in dgvBooks.SelectedRows)
+                    {
+                        string sachID = row.Cells["IDSach"].Value.ToString();
+                        
+                        // Kiểm tra sách có sẵn không trong transaction
+                        cmd.CommandText = "SELECT TinhTrang FROM ThongTinSach WITH (UPDLOCK) WHERE IDSach = @SachID";
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.AddWithValue("@SachID", sachID);
+                        object tinhTrangObj = cmd.ExecuteScalar();
+                        
+                        if (tinhTrangObj == null || tinhTrangObj.ToString().Trim() != "Sẵn sàng")
+                        {
+                            throw new Exception($"Sách {sachID} không còn sẵn sàng!");
+                        }
+
+                        string ctID = DatabaseHelper.GenerateUniqueID("CT");
+                        cmd.CommandText = @"INSERT INTO ChiTietMuon (IDChiTietMuon, IDPhieuMuon, IDSach, NgayMuon, HanTra, TinhTrangTra) 
+                                          VALUES (@CTID, @PMID, @SachID, @NgayMuon, @HanTra, N'Đang mượn')";
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.AddWithValue("@CTID", ctID);
+                        cmd.Parameters.AddWithValue("@PMID", phieuMuonID);
+                        cmd.Parameters.AddWithValue("@SachID", sachID);
+                        cmd.Parameters.AddWithValue("@NgayMuon", dtpBorrowDate.Value);
+                        cmd.Parameters.AddWithValue("@HanTra", dtpBorrowDate.Value.AddDays(4));
+                        cmd.ExecuteNonQuery();
+
+                        // Update Book status
+                        cmd.CommandText = "UPDATE ThongTinSach SET TinhTrang = N'Đang mượn' WHERE IDSach = @SachID";
+                        cmd.Parameters.Clear();
+                        cmd.Parameters.AddWithValue("@SachID", sachID);
+                        cmd.ExecuteNonQuery();
+                    }
+                });
 
                 MessageBox.Show($"Lập phiếu mượn thành công!\nMã phiếu: {phieuMuonID}\nHạn trả: {dtpBorrowDate.Value.AddDays(4):dd/MM/yyyy}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Close();

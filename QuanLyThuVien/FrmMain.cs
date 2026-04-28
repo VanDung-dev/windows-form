@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -83,7 +83,21 @@ namespace QuanLyThuVien
             DangNhap.Text = CurrentUser.HoTen;
             DangXuat.Visible = true;
             DangNhap.Enabled = false;
-            if (CurrentUser.BoPhan == "Ban Giám Đốc")
+
+            if (CurrentUser.BoPhan == "Quản Trị")
+            {
+                HSNhanVien.Enabled = true;
+                TheDocGia.Enabled = true;
+                PhieuMuonSach.Enabled = true;
+                PhieuTraSach.Enabled = true;
+                TiepNhanSachMoi.Enabled = true;
+                TraCuuSach.Enabled = true;
+                ThuTienPhat.Enabled = true;
+                ThanhLy.Enabled = true;
+                BaoCaoThongKe.Enabled = true;
+                CaiDat.Enabled = true;
+            }
+            else if (CurrentUser.BoPhan == "Ban Giám Đốc")
             {
                 HSNhanVien.Enabled = true;
                 TheDocGia.Enabled = false;
@@ -156,7 +170,7 @@ namespace QuanLyThuVien
         private void TheDocGia_Click(object sender, EventArgs e)
         {
 
-            if (CurrentUser.BoPhan == "Thủ Thư") //Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Thủ Thư")
             {
                 OpenForm(new FrmReaderCard());
             }
@@ -164,7 +178,7 @@ namespace QuanLyThuVien
 
         private void PhieuMuonSach_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Thủ Thư") //Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Thủ Thư")
             {
                 OpenForm(new FrmBorrow());
             }
@@ -172,7 +186,7 @@ namespace QuanLyThuVien
 
         private void PhieuTraSach_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Thủ Thư") //Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Thủ Thư")
             {
                 OpenForm(new FrmReturn());
             }
@@ -180,7 +194,7 @@ namespace QuanLyThuVien
 
         private void TiepNhanSachMoi_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Thủ Kho") //Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Thủ Kho")
             {
                 OpenForm(new FrmBookEntry());
             }
@@ -188,7 +202,7 @@ namespace QuanLyThuVien
 
         private void TraCuuSach_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Thủ Kho" || CurrentUser.BoPhan == "Ban Giám Đốc" || CurrentUser.BoPhan == "Thủ Thư" || CurrentUser.BoPhan == "Thủ Quỹ") //Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Thủ Kho" || CurrentUser.BoPhan == "Ban Giám Đốc" || CurrentUser.BoPhan == "Thủ Thư" || CurrentUser.BoPhan == "Thủ Quỹ")
             {
                 OpenForm(new FrmSearchBook());
             }
@@ -196,7 +210,7 @@ namespace QuanLyThuVien
 
         private void ThuTienPhat_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Thủ Quỹ")//Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Thủ Quỹ")
             {
                 OpenForm(new FrmFineCollection());
             }
@@ -204,16 +218,16 @@ namespace QuanLyThuVien
 
         private void ThanhLy_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Thủ Kho") //Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Thủ Kho")
             {
                 OpenForm(new FrmLiquidation());
             }
 
         }
 
-        private void BaoCaoThongKe_Click(object sender, EventArgs e)//Oke   
+        private void BaoCaoThongKe_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Ban Giám Đốc")
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Ban Giám Đốc")
             {
                 OpenForm(new FrmReports());
             }
@@ -222,7 +236,7 @@ namespace QuanLyThuVien
 
         private void CaiDat_Click(object sender, EventArgs e)
         {
-            if (CurrentUser.BoPhan == "Ban Giám Đốc") //Oke
+            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Ban Giám Đốc")
             {
                 OpenForm(new FrmSettings());
             }

@@ -9,6 +9,11 @@ namespace QuanLyThuVien.Helpers
     {
         private static string connectionString = ConfigurationManager.ConnectionStrings["LibraryDB"]?.ConnectionString 
                                                  ?? "Server=.;Database=QUANLYTHUVIEN;Trusted_Connection=True;";
+        
+        public static string GenerateUniqueID(string prefix)
+        {
+            return prefix + DateTime.Now.Ticks.ToString() + Guid.NewGuid().ToString("N").Substring(0, 4);
+        }
 
         public static DataTable ExecuteQuery(string query, SqlParameter[] parameters = null)
         {
@@ -58,6 +63,33 @@ namespace QuanLyThuVien.Helpers
                     }
                     conn.Open();
                     return cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public static int ExecuteWithTransaction(Action<SqlCommand> executeCommands)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        using (SqlCommand cmd = new SqlCommand())
+                        {
+                            cmd.Connection = conn;
+                            cmd.Transaction = transaction;
+                            executeCommands(cmd);
+                            transaction.Commit();
+                            return 1;
+                        }
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
                 }
             }
         }
