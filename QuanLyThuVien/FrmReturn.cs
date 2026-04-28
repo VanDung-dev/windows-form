@@ -212,15 +212,25 @@ namespace QuanLyThuVien
         {
             try
             {
-                // Đếm tổng số lần vi phạm: (Trả muộn) HOẶC (Làm mất/hỏng sách)
+                // Chỉ đếm vi phạm trong vòng 12 tháng gần nhất
+                DateTime oneYearAgo = DateTime.Now.AddYears(-1);
+                
                 string queryCount = @"
                     SELECT COUNT(*) 
                     FROM ChiTietMuon CT 
                     JOIN PhieuMuon PM ON CT.IDPhieuMuon = PM.IDPhieuMuon 
                     WHERE PM.IDNguoiMuon = @ID 
+                      AND CT.NgayTra IS NOT NULL
+                      AND CT.NgayTra >= @OneYearAgo
                       AND (CT.NgayTra > CT.HanTra OR CT.TinhTrangTra = N'Mất' OR CT.TinhTrangTra = N'Hỏng')";
                 
-                int violationCount = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryCount, new SqlParameter[] { new SqlParameter("@ID", readerID) }));
+                int violationCount = Convert.ToInt32(DatabaseHelper.ExecuteScalar(queryCount, new SqlParameter[] { 
+                    new SqlParameter("@ID", readerID),
+                    new SqlParameter("@OneYearAgo", oneYearAgo)
+                }));
+
+                string currentQuery = "SELECT LoaiDocGia FROM TheDocGia WHERE IDDocGia = @ID";
+                string currentType = DatabaseHelper.ExecuteScalar(currentQuery, new SqlParameter[] { new SqlParameter("@ID", readerID) })?.ToString() ?? "Whitelist";
 
                 string newType = "Whitelist";
                 if (violationCount >= 3)
@@ -232,16 +242,18 @@ namespace QuanLyThuVien
                     newType = "Graylist";
                 }
 
-                // Cập nhật lại vào bảng TheDocGia
-                string queryUpdate = "UPDATE TheDocGia SET LoaiDocGia = @NewType WHERE IDDocGia = @ID";
-                DatabaseHelper.ExecuteNonQuery(queryUpdate, new SqlParameter[] {
-                    new SqlParameter("@NewType", newType),
-                    new SqlParameter("@ID", readerID)
-                });
+                // Chỉ cập nhật nếu có thay đổi để tránh trigger không cần thiết
+                if (newType != currentType)
+                {
+                    string queryUpdate = "UPDATE TheDocGia SET LoaiDocGia = @NewType WHERE IDDocGia = @ID";
+                    DatabaseHelper.ExecuteNonQuery(queryUpdate, new SqlParameter[] {
+                        new SqlParameter("@NewType", newType),
+                        new SqlParameter("@ID", readerID)
+                    });
+                }
             }
             catch (Exception ex)
             {
-                // Không làm gián đoạn luồng chính nếu lỗi phần tự động hạ bậc
                 Console.WriteLine("Lỗi cập nhật hạng độc giả: " + ex.Message);
             }
         }
