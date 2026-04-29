@@ -122,12 +122,12 @@ namespace QuanLyThuVien
             // dgvBorrowingList
             // 
             this.dgvBorrowingList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvBorrowingList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvBorrowingList.Location = new System.Drawing.Point(0, 0);
+            this.dgvBorrowingList.Dock = System.Windows.Forms.DockStyle.Right;
+            this.dgvBorrowingList.Location = new System.Drawing.Point(383, 0);
             this.dgvBorrowingList.Margin = new System.Windows.Forms.Padding(4);
             this.dgvBorrowingList.Name = "dgvBorrowingList";
             this.dgvBorrowingList.RowHeadersWidth = 51;
-            this.dgvBorrowingList.Size = new System.Drawing.Size(1112, 625);
+            this.dgvBorrowingList.Size = new System.Drawing.Size(729, 625);
             this.dgvBorrowingList.TabIndex = 5;
             // 
             // groupBox2
@@ -264,7 +264,7 @@ namespace QuanLyThuVien
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(347, 625);
+            this.panel1.Size = new System.Drawing.Size(376, 625);
             this.panel1.TabIndex = 9;
             // 
             // FrmReturn
