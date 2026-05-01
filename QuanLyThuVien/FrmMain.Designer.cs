@@ -37,7 +37,6 @@
             this.ThuTienPhat = new System.Windows.Forms.Button();
             this.ThanhLy = new System.Windows.Forms.Button();
             this.BaoCaoThongKe = new System.Windows.Forms.Button();
-            this.CaiDat = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.DangNhap = new System.Windows.Forms.ToolStripMenuItem();
             this.DangXuat = new System.Windows.Forms.ToolStripMenuItem();
@@ -164,19 +163,6 @@
             this.BaoCaoThongKe.UseVisualStyleBackColor = false;
             this.BaoCaoThongKe.Click += new System.EventHandler(this.BaoCaoThongKe_Click);
             // 
-            // CaiDat
-            // 
-            this.CaiDat.BackColor = System.Drawing.Color.White;
-            this.CaiDat.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CaiDat.Location = new System.Drawing.Point(16, 761);
-            this.CaiDat.Margin = new System.Windows.Forms.Padding(4);
-            this.CaiDat.Name = "CaiDat";
-            this.CaiDat.Size = new System.Drawing.Size(200, 37);
-            this.CaiDat.TabIndex = 9;
-            this.CaiDat.Text = "Cài đặt";
-            this.CaiDat.UseVisualStyleBackColor = false;
-            this.CaiDat.Click += new System.EventHandler(this.CaiDat_Click);
-            // 
             // menuStrip1
             // 
             this.menuStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(217)))), ((int)(((byte)(55)))), ((int)(((byte)(49)))));
@@ -243,7 +229,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1685, 838);
             this.Controls.Add(this.PanelContent);
-            this.Controls.Add(this.CaiDat);
             this.Controls.Add(this.BaoCaoThongKe);
             this.Controls.Add(this.ThanhLy);
             this.Controls.Add(this.ThuTienPhat);
@@ -278,7 +263,6 @@
         private System.Windows.Forms.Button ThuTienPhat;
         private System.Windows.Forms.Button ThanhLy;
         private System.Windows.Forms.Button BaoCaoThongKe;
-        private System.Windows.Forms.Button CaiDat;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem DangNhap;
         private System.Windows.Forms.ToolStripMenuItem TroGiup;
