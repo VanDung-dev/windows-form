@@ -67,7 +67,6 @@ namespace QuanLyThuVien
                 ThuTienPhat.Enabled = true;
                 ThanhLy.Enabled = true;
                 BaoCaoThongKe.Enabled = true;
-                CaiDat.Enabled = true;
             }
             else if (CurrentUser.BoPhan == "Ban Giám Đốc")
             {
@@ -80,7 +79,6 @@ namespace QuanLyThuVien
                 ThuTienPhat.Enabled = false;
                 ThanhLy.Enabled = false;
                 BaoCaoThongKe.Enabled = true;
-                CaiDat.Enabled = true;
             }
             else if (CurrentUser.BoPhan == "Thủ Thư")
             {
@@ -93,8 +91,6 @@ namespace QuanLyThuVien
                 ThuTienPhat.Enabled = false;
                 ThanhLy.Enabled = false;
                 BaoCaoThongKe.Enabled = false;
-                CaiDat.Enabled = false;
-
             }
             else if (CurrentUser.BoPhan == "Thủ Kho")
             {
@@ -107,8 +103,6 @@ namespace QuanLyThuVien
                 ThuTienPhat.Enabled = false;
                 ThanhLy.Enabled = true;
                 BaoCaoThongKe.Enabled = false;
-                CaiDat.Enabled = false;
-
             }
             else if (CurrentUser.BoPhan == "Thủ Quỹ")
             {
@@ -121,7 +115,6 @@ namespace QuanLyThuVien
                 ThuTienPhat.Enabled = true;
                 ThanhLy.Enabled = false;
                 BaoCaoThongKe.Enabled = false;
-                CaiDat.Enabled = false;
             }
         }
 
@@ -206,15 +199,6 @@ namespace QuanLyThuVien
 
         }
 
-        private void CaiDat_Click(object sender, EventArgs e)
-        {
-            if (CurrentUser.BoPhan == "Quản Trị" || CurrentUser.BoPhan == "Ban Giám Đốc")
-            {
-                OpenForm(new FrmSettings());
-            }
-        }
-
-
         private void TroGiupToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Quản Lý Thư Viện:\n\n\n" +
@@ -241,7 +225,6 @@ namespace QuanLyThuVien
             ThuTienPhat.Enabled = false;
             ThanhLy.Enabled = false;
             BaoCaoThongKe.Enabled = false;
-            CaiDat.Enabled = false;
         }
 
         private void DangXuat_Click(object sender, EventArgs e)
@@ -268,8 +251,6 @@ namespace QuanLyThuVien
             ThuTienPhat.Enabled = false;
             ThanhLy.Enabled = false;
             BaoCaoThongKe.Enabled = false;
-            CaiDat.Enabled = false;
         }
-
     }
 }
