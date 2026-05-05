@@ -33,16 +33,17 @@
             this.lblLyDo = new System.Windows.Forms.Label();
             this.btnDong = new System.Windows.Forms.Button();
             this.btnXacNhan = new System.Windows.Forms.Button();
-            this.btnTimKiem = new System.Windows.Forms.Button();
-            this.txtMaSach = new System.Windows.Forms.TextBox();
             this.dgvBooks = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.comboSearchMethod = new System.Windows.Forms.ComboBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtMaSach = new System.Windows.Forms.TextBox();
+            this.btnTimKiem = new System.Windows.Forms.Button();
             this.grpThanhLy.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpThanhLy
@@ -52,7 +53,7 @@
             this.grpThanhLy.Controls.Add(this.btnDong);
             this.grpThanhLy.Controls.Add(this.btnXacNhan);
             this.grpThanhLy.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpThanhLy.Location = new System.Drawing.Point(13, 138);
+            this.grpThanhLy.Location = new System.Drawing.Point(13, 186);
             this.grpThanhLy.Margin = new System.Windows.Forms.Padding(4);
             this.grpThanhLy.Name = "grpThanhLy";
             this.grpThanhLy.Padding = new System.Windows.Forms.Padding(4);
@@ -102,26 +103,6 @@
             this.btnXacNhan.UseVisualStyleBackColor = true;
             this.btnXacNhan.Click += new System.EventHandler(this.XacNhan_Click);
             // 
-            // btnTimKiem
-            // 
-            this.btnTimKiem.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTimKiem.Location = new System.Drawing.Point(17, 92);
-            this.btnTimKiem.Margin = new System.Windows.Forms.Padding(4);
-            this.btnTimKiem.Name = "btnTimKiem";
-            this.btnTimKiem.Size = new System.Drawing.Size(207, 38);
-            this.btnTimKiem.TabIndex = 6;
-            this.btnTimKiem.Text = "Tìm kiếm";
-            this.btnTimKiem.UseVisualStyleBackColor = true;
-            this.btnTimKiem.Click += new System.EventHandler(this.Timkiem_Click);
-            // 
-            // txtMaSach
-            // 
-            this.txtMaSach.Location = new System.Drawing.Point(17, 52);
-            this.txtMaSach.Margin = new System.Windows.Forms.Padding(4);
-            this.txtMaSach.Name = "txtMaSach";
-            this.txtMaSach.Size = new System.Drawing.Size(207, 22);
-            this.txtMaSach.TabIndex = 5;
-            // 
             // dgvBooks
             // 
             this.dgvBooks.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
@@ -137,10 +118,8 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panel1.Controls.Add(this.comboSearchMethod);
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.grpThanhLy);
-            this.panel1.Controls.Add(this.txtMaSach);
-            this.panel1.Controls.Add(this.btnTimKiem);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
@@ -156,17 +135,38 @@
             this.panel2.Size = new System.Drawing.Size(854, 567);
             this.panel2.TabIndex = 11;
             // 
-            // comboSearchMethod
+            // groupBox1
             // 
-            this.comboSearchMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboSearchMethod.FormattingEnabled = true;
-            this.comboSearchMethod.Items.AddRange(new object[] {
-            "Tìm bằng mã sách",
-            "Tìm bằng tên sách"});
-            this.comboSearchMethod.Location = new System.Drawing.Point(17, 21);
-            this.comboSearchMethod.Name = "comboSearchMethod";
-            this.comboSearchMethod.Size = new System.Drawing.Size(207, 24);
-            this.comboSearchMethod.TabIndex = 10;
+            this.groupBox1.Controls.Add(this.txtMaSach);
+            this.groupBox1.Controls.Add(this.btnTimKiem);
+            this.groupBox1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(13, 22);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Size = new System.Drawing.Size(232, 156);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Tìm sách bằng tên";
+            // 
+            // txtMaSach
+            // 
+            this.txtMaSach.Location = new System.Drawing.Point(16, 43);
+            this.txtMaSach.Margin = new System.Windows.Forms.Padding(4);
+            this.txtMaSach.Name = "txtMaSach";
+            this.txtMaSach.Size = new System.Drawing.Size(204, 32);
+            this.txtMaSach.TabIndex = 0;
+            // 
+            // btnTimKiem
+            // 
+            this.btnTimKiem.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnTimKiem.Location = new System.Drawing.Point(65, 83);
+            this.btnTimKiem.Margin = new System.Windows.Forms.Padding(4);
+            this.btnTimKiem.Name = "btnTimKiem";
+            this.btnTimKiem.Size = new System.Drawing.Size(105, 33);
+            this.btnTimKiem.TabIndex = 1;
+            this.btnTimKiem.Text = "Tìm kiếm";
+            this.btnTimKiem.UseVisualStyleBackColor = true;
             // 
             // FrmLiquidation
             // 
@@ -182,8 +182,9 @@
             this.grpThanhLy.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -195,11 +196,11 @@
         private System.Windows.Forms.Label lblLyDo;
         private System.Windows.Forms.Button btnDong;
         private System.Windows.Forms.Button btnXacNhan;
-        private System.Windows.Forms.Button btnTimKiem;
-        private System.Windows.Forms.TextBox txtMaSach;
         private System.Windows.Forms.DataGridView dgvBooks;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.ComboBox comboSearchMethod;
+        public System.Windows.Forms.GroupBox groupBox1;
+        public System.Windows.Forms.TextBox txtMaSach;
+        public System.Windows.Forms.Button btnTimKiem;
     }
 }

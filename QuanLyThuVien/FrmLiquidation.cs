@@ -33,7 +33,6 @@ namespace QuanLyThuVien
             cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.Damaged, Text = "Hỏng" });
             cboLyDo.Items.Add(new ReasonItem { Value = LiquidationReason.LostByUser, Text = "Mất do người dùng" });
             if (cboLyDo.Items.Count > 0) cboLyDo.SelectedIndex = 0;
-            comboSearchMethod.SelectedIndex = 0;
 
             dgvBooks.Columns.Clear();
             dgvBooks.AutoGenerateColumns = false;
@@ -179,10 +178,7 @@ namespace QuanLyThuVien
             if (!string.IsNullOrWhiteSpace(txtMaSach.Text))
             {
                 var p = new SqlParameter[] { new SqlParameter("@searchValue", txtMaSach.Text.Trim()) };
-                string field;
-                if (comboSearchMethod.SelectedIndex == 0) field = "c.IDCaTheSach";
-                else field = "s.TenSach";
-                LoadData(field + " LIKE '%' + @searchValue + '%'", p);
+                LoadData("s.TenSach LIKE '%' + @searchValue + '%'", p);
             }
             else
             {
