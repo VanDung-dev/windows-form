@@ -38,17 +38,18 @@ namespace QuanLyThuVien
             this.btnSanSang = new System.Windows.Forms.Button();
             this.btnTatCa = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.comboSearchMethod = new System.Windows.Forms.ComboBox();
             this.dgvBooks = new System.Windows.Forms.DataGridView();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.grpBoLoc.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnTimKiem
             // 
             this.btnTimKiem.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTimKiem.Location = new System.Drawing.Point(119, 132);
+            this.btnTimKiem.Location = new System.Drawing.Point(125, 83);
             this.btnTimKiem.Margin = new System.Windows.Forms.Padding(4);
             this.btnTimKiem.Name = "btnTimKiem";
             this.btnTimKiem.Size = new System.Drawing.Size(105, 33);
@@ -58,10 +59,10 @@ namespace QuanLyThuVien
             // 
             // txtMaSach
             // 
-            this.txtMaSach.Location = new System.Drawing.Point(9, 92);
+            this.txtMaSach.Location = new System.Drawing.Point(16, 43);
             this.txtMaSach.Margin = new System.Windows.Forms.Padding(4);
             this.txtMaSach.Name = "txtMaSach";
-            this.txtMaSach.Size = new System.Drawing.Size(334, 22);
+            this.txtMaSach.Size = new System.Drawing.Size(320, 32);
             this.txtMaSach.TabIndex = 0;
             // 
             // grpBoLoc
@@ -145,28 +146,13 @@ namespace QuanLyThuVien
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.panel1.Controls.Add(this.comboSearchMethod);
-            this.panel1.Controls.Add(this.txtMaSach);
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.grpBoLoc);
-            this.panel1.Controls.Add(this.btnTimKiem);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(358, 567);
             this.panel1.TabIndex = 5;
-            // 
-            // comboSearchMethod
-            // 
-            this.comboSearchMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboSearchMethod.FormattingEnabled = true;
-            this.comboSearchMethod.Items.AddRange(new object[] {
-            "Tìm bằng mã sách",
-            "Tìm bằng tên sách"});
-            this.comboSearchMethod.Location = new System.Drawing.Point(9, 60);
-            this.comboSearchMethod.Margin = new System.Windows.Forms.Padding(4);
-            this.comboSearchMethod.Name = "comboSearchMethod";
-            this.comboSearchMethod.Size = new System.Drawing.Size(334, 24);
-            this.comboSearchMethod.TabIndex = 9;
             // 
             // dgvBooks
             // 
@@ -179,6 +165,20 @@ namespace QuanLyThuVien
             this.dgvBooks.RowTemplate.Height = 24;
             this.dgvBooks.Size = new System.Drawing.Size(754, 567);
             this.dgvBooks.TabIndex = 6;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.txtMaSach);
+            this.groupBox1.Controls.Add(this.btnTimKiem);
+            this.groupBox1.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(4, 33);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox1.Size = new System.Drawing.Size(344, 156);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Tìm sách bằng tên";
             // 
             // FrmSearchBook
             // 
@@ -193,8 +193,9 @@ namespace QuanLyThuVien
             this.grpBoLoc.ResumeLayout(false);
             this.grpBoLoc.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBooks)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -212,6 +213,6 @@ namespace QuanLyThuVien
         public System.Windows.Forms.Button btnTatCa;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.DataGridView dgvBooks;
-        public System.Windows.Forms.ComboBox comboSearchMethod;
+        public System.Windows.Forms.GroupBox groupBox1;
     }
 }

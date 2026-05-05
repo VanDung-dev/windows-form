@@ -33,7 +33,6 @@ namespace QuanLyThuVien
 
         private void FrmSearchBook_Load(object sender, EventArgs e)
         {
-            comboSearchMethod.SelectedIndex = 0;
             LoadCategories();
             SetupGridColumns();
             LoadData();
@@ -77,6 +76,7 @@ namespace QuanLyThuVien
         {
             dgvBooks.Columns.Clear();
             dgvBooks.AutoGenerateColumns = false;
+            dgvBooks.Columns.Add("IDCaTheSach", "Mã cá thể sách");
             dgvBooks.Columns.Add("IDSach", "Mã sách");
             dgvBooks.Columns.Add("TenSach", "Tên sách");
             dgvBooks.Columns.Add("TacGia", "Tác giả");
@@ -105,7 +105,7 @@ namespace QuanLyThuVien
                 catch { }
 
                 string giaThueCol = hasGiaThue ? ", s.GiaThue" : ", 0 AS GiaThue";
-                string sql = "SELECT s.IDSach, s.TenSach, s.TacGia, s.NhaXuatBan, s.NamXuatBan, s.GiaBan" + giaThueCol + ", ISNULL(d.TenDauSach, s.IDDauSach) AS TheLoai, s.IDDauSach, c.TinhTrang FROM ThongTinSach s LEFT JOIN DauSach d ON s.IDDauSach = d.IDDauSach LEFT JOIN CaTheSach c ON s.IDSach = c.IDSach";
+                string sql = "SELECT c.IDCaTheSach, s.IDSach, s.TenSach, s.TacGia, s.NhaXuatBan, s.NamXuatBan, s.GiaBan" + giaThueCol + ", ISNULL(d.TenDauSach, s.IDDauSach) AS TheLoai, s.IDDauSach, c.TinhTrang FROM ThongTinSach s LEFT JOIN DauSach d ON s.IDDauSach = d.IDDauSach LEFT JOIN CaTheSach c ON s.IDSach = c.IDSach";
 
                 string finalWhere = "";
 
@@ -155,6 +155,7 @@ namespace QuanLyThuVien
                     }
                     var theLoai = r["TheLoai"]?.ToString()?.Trim() ?? r["IDDauSach"]?.ToString()?.Trim() ?? "";
                     dgvBooks.Rows.Add(
+                        r["IDCaTheSach"]?.ToString()?.Trim(),
                         r["IDSach"]?.ToString()?.Trim(),
                         r["TenSach"]?.ToString()?.Trim(),
                         r["TacGia"]?.ToString()?.Trim(),
@@ -213,9 +214,9 @@ namespace QuanLyThuVien
         private void DataGridView1_DoubleClick(object sender, EventArgs e)
         {
             if (dgvBooks.SelectedRows.Count == 0) return;
-            var id = dgvBooks.SelectedRows[0].Cells[0].Value?.ToString()?.Trim();
-            if (string.IsNullOrWhiteSpace(id)) return;
-            txtMaSach.Text = id;
+            var name = dgvBooks.SelectedRows[0].Cells[2].Value?.ToString()?.Trim();
+            if (string.IsNullOrWhiteSpace(name)) return;
+            txtMaSach.Text = name;
             Button1_Click(null, null);
         }
 
@@ -226,17 +227,10 @@ namespace QuanLyThuVien
                 LoadData(borrowStatusClause);
             }
 
-            string searchField = "s.IDSach"; // Default search field is ID
             string searchValue = txtMaSach.Text.Trim();
 
-            // Determine the search field based on the comboSearchMethod dropdown
-            if (comboSearchMethod.SelectedIndex == 1) // Search by Name
-            {
-                searchField = "s.TenSach";
-            }
-
             // Build the WHERE clause
-            string whereClause = $"{searchField} LIKE @searchValue";
+            string whereClause = "s.TenSach LIKE @searchValue";
             SqlParameter[] parameters = { new SqlParameter("@searchValue", "%" + searchValue + "%") };
 
             try
