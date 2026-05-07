@@ -128,6 +128,14 @@ namespace QuanLyThuVien
             {
                 MessageBox.Show("Lỗi khi thêm nhân viên: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            cboHoTen.Text = "";
+            cboDiaChi.Text = "";
+            cboSDT.Text = "";
+            cboMatKhau.Text = "";
+            date_NS.Value = DateTime.Now;
+            cboBangCap.SelectedIndex = 0;
+            cboBoPhan.SelectedIndex = 0;
+            cboChucVu.SelectedIndex = 0;
         }
 
         private void btnxoa_Click_1(object sender, EventArgs e)
