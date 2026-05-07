@@ -1,4 +1,4 @@
-﻿namespace QuanLyThuVien
+﻿﻿﻿namespace QuanLyThuVien
 {
     partial class FrmLiquidation
     {
@@ -33,6 +33,8 @@
             this.lblLyDo = new System.Windows.Forms.Label();
             this.btnDong = new System.Windows.Forms.Button();
             this.btnXacNhan = new System.Windows.Forms.Button();
+            this.btnDeleteBook = new System.Windows.Forms.Button();
+            this.btnDeleteBook = new System.Windows.Forms.Button();
             this.dgvBooks = new System.Windows.Forms.DataGridView();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -53,12 +55,14 @@
             this.grpThanhLy.Controls.Add(this.lblLyDo);
             this.grpThanhLy.Controls.Add(this.btnDong);
             this.grpThanhLy.Controls.Add(this.btnXacNhan);
+            this.grpThanhLy.Controls.Add(this.btnDeleteBook);
+            this.grpThanhLy.Controls.Add(this.btnDeleteBook);
             this.grpThanhLy.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.grpThanhLy.Location = new System.Drawing.Point(13, 186);
             this.grpThanhLy.Margin = new System.Windows.Forms.Padding(4);
             this.grpThanhLy.Name = "grpThanhLy";
             this.grpThanhLy.Padding = new System.Windows.Forms.Padding(4);
-            this.grpThanhLy.Size = new System.Drawing.Size(232, 209);
+            this.grpThanhLy.Size = new System.Drawing.Size(232, 260);
             this.grpThanhLy.TabIndex = 7;
             this.grpThanhLy.TabStop = false;
             this.grpThanhLy.Text = "Thanh lý";
@@ -103,6 +107,16 @@
             this.btnXacNhan.Text = "Xác nhận";
             this.btnXacNhan.UseVisualStyleBackColor = true;
             this.btnXacNhan.Click += new System.EventHandler(this.XacNhan_Click);
+            // 
+            // btnDeleteBook
+            // 
+            this.btnDeleteBook.Location = new System.Drawing.Point(8, 181);
+            this.btnDeleteBook.Margin = new System.Windows.Forms.Padding(4);
+            this.btnDeleteBook.Name = "btnDeleteBook";
+            this.btnDeleteBook.Size = new System.Drawing.Size(207, 38);
+            this.btnDeleteBook.TabIndex = 7;
+            this.btnDeleteBook.Text = "Xóa sách";
+            this.btnDeleteBook.UseVisualStyleBackColor = true;
             // 
             // dgvBooks
             // 
@@ -215,6 +229,7 @@
         public System.Windows.Forms.GroupBox groupBox1;
         public System.Windows.Forms.TextBox txtMaSach;
         public System.Windows.Forms.Button btnTimKiem;
+        private System.Windows.Forms.Button btnDeleteBook;
         private System.Windows.Forms.Button btnBack;
     }
 }
