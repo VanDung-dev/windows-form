@@ -16,6 +16,7 @@ namespace QuanLyThuVien
     public partial class FrmLiquidation : Form
     {
         private bool isShowingThongTinSach = true;
+        private string currentIDSach = "";
 
         public FrmLiquidation()
         {
@@ -27,6 +28,7 @@ namespace QuanLyThuVien
             btnDong.Click += Dong_Click;
             dgvBooks.SelectionChanged += DgvBooks_SelectionChanged;
             btnBack.Click += BtnBack_Click;
+            btnDeleteBook.Click += BtnDeleteBook_Click;
         }
 
         private void InitializeCustomComponents()
@@ -66,6 +68,7 @@ namespace QuanLyThuVien
         {
             LoadThongTinSach();
             btnBack.Visible = false; // Ensure the button is hidden initially
+            btnDeleteBook.Visible = false;
         }
 
         private void LoadThongTinSach(string keyword = "", SqlParameter[] parameters = null)
@@ -73,7 +76,7 @@ namespace QuanLyThuVien
             try
             {
                 string sql = @"
-                    SELECT IDSach, TenSach, TacGia, GiaBan, GiaThue
+                    SELECT IDSach, TenSach, TacGia, NamXuatBan, NhaXuatBan, GiaBan, GiaThue, SoLuong
                     FROM ThongTinSach";
 
                 if (!string.IsNullOrWhiteSpace(keyword))
@@ -88,8 +91,11 @@ namespace QuanLyThuVien
                 dgvBooks.Columns.Add("IDSach", "Mã sách");
                 dgvBooks.Columns.Add("TenSach", "Tên sách");
                 dgvBooks.Columns.Add("TacGia", "Tác giả");
+                dgvBooks.Columns.Add("NamXuatBan", "Năm xuất bản");
+                dgvBooks.Columns.Add("NhaXuatBan", "Nhà xuất bản");
                 dgvBooks.Columns.Add("GiaBan", "Trị giá");
                 dgvBooks.Columns.Add("GiaThue", "Giá thuê");
+                dgvBooks.Columns.Add("SoLuong", "Số lượng");
 
                 foreach (DataRow r in dt.Rows)
                 {
@@ -97,13 +103,17 @@ namespace QuanLyThuVien
                         r["IDSach"]?.ToString()?.Trim(),
                         r["TenSach"]?.ToString()?.Trim(),
                         r["TacGia"]?.ToString()?.Trim(),
+                        r["NamXuatBan"],
+                        r["NhaXuatBan"]?.ToString()?.Trim(),
                         r["GiaBan"],
-                        r["GiaThue"]
+                        r["GiaThue"],
+                        r["SoLuong"]
                     );
                 }
 
                 isShowingThongTinSach = true;
                 btnBack.Visible = false; // Hide the button when showing ThongTinSach
+                btnDeleteBook.Visible = false;
             }
             catch (Exception ex)
             {
@@ -116,13 +126,14 @@ namespace QuanLyThuVien
             try
             {
                 string sql = @"
-                    SELECT c.IDCaTheSach, c.IDSach, s.TenSach, c.TinhTrang, t.LyDoThanhLy, t.NgayThanhLy
+                    SELECT c.IDCaTheSach, c.IDSach, s.TenSach, c.NgayNhap, c.TinhTrang, t.LyDoThanhLy, t.NgayThanhLy, s.GiaBan
                     FROM CaTheSach c
                     LEFT JOIN ThanhLySach t ON c.IDCaTheSach = t.IDCaTheSach
                     JOIN ThongTinSach s ON c.IDSach = s.IDSach
                     WHERE c.IDSach = @idSach";
 
                 var parameters = new SqlParameter[] { new SqlParameter("@idSach", idSach) };
+                currentIDSach = idSach;
                 var dt = DatabaseHelper.ExecuteQuery(sql, parameters);
                 dgvBooks.Rows.Clear();
                 dgvBooks.Columns.Clear();
@@ -130,17 +141,24 @@ namespace QuanLyThuVien
                 dgvBooks.Columns.Add("IDCaTheSach", "Mã cá thể sách");
                 dgvBooks.Columns.Add("IDSach", "Mã sách");
                 dgvBooks.Columns.Add("TenSach", "Tên sách");
+                dgvBooks.Columns.Add("NgayNhap", "Ngày nhập");
                 dgvBooks.Columns.Add("TinhTrang", "Tình trạng");
+                dgvBooks.Columns.Add("GiaBan", "Trị giá");
                 dgvBooks.Columns.Add("LyDoThanhLy", "Lý do thanh lý");
                 dgvBooks.Columns.Add("NgayThanhLy", "Ngày thanh lý");
 
                 foreach (DataRow r in dt.Rows)
                 {
+                    string rawStatus = r["TinhTrang"]?.ToString()?.Trim() ?? "";
+                    string displayStatus = GetStatusText(rawStatus);
+
                     dgvBooks.Rows.Add(
                         r["IDCaTheSach"]?.ToString()?.Trim(),
                         r["IDSach"]?.ToString()?.Trim(),
                         r["TenSach"]?.ToString()?.Trim(),
-                        r["TinhTrang"]?.ToString()?.Trim(),
+                        r["NgayNhap"] != DBNull.Value ? Convert.ToDateTime(r["NgayNhap"]).ToString("dd/MM/yyyy") : "",
+                        displayStatus,
+                        r["GiaBan"],
                         r["LyDoThanhLy"]?.ToString()?.Trim(),
                         r["NgayThanhLy"]?.ToString()?.Trim()
                     );
@@ -148,6 +166,7 @@ namespace QuanLyThuVien
 
                 isShowingThongTinSach = false;
                 btnBack.Visible = true; // Show the button when showing CaTheSach
+                btnDeleteBook.Visible = true;
             }
             catch (Exception ex)
             {
@@ -368,11 +387,10 @@ namespace QuanLyThuVien
 
                     UpdateBookCount();
 
-                    MessageBox.Show("Đã thanh lý sách thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Đã thanh lý cá thể sách thành công.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    Timkiem_Click(null, null);
-                    dgvBooks.ClearSelection();
-
+                    LoadCaTheSach(currentIDSach);
+                    
                     foreach (Form frm in Application.OpenForms)
                     {
                         if (frm is FrmSearchBook searchForm)
@@ -386,11 +404,50 @@ namespace QuanLyThuVien
                     MessageBox.Show("Lỗi khi thanh lý sách: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                LoadThongTinSach();
+            }
+            catch
+            {
+                MessageBox.Show("Hãy chọn một cá thể sách để thanh lý.");
+            }
+        }
+
+        private void BtnDeleteBook_Click(object sender, EventArgs e)
+        {
+            if (isShowingThongTinSach || dgvBooks.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Vui lòng chọn một cá thể sách trong danh sách chi tiết để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var row = dgvBooks.SelectedRows[0];
+            var idCaTheSach = row.Cells["IDCaTheSach"].Value?.ToString()?.Trim();
+            var tinhTrang = row.Cells["TinhTrang"].Value?.ToString()?.Trim();
+
+            if (tinhTrang == "Đang mượn")
+            {
+                MessageBox.Show("Không thể xóa sách đang được mượn!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var result = MessageBox.Show($"Bạn có chắc chắn muốn xóa vĩnh viễn cá thể sách {idCaTheSach}? Hành động này không thể hoàn tác.", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result != DialogResult.Yes) return;
+
+            try
+            {
+                // Xóa các bản ghi liên quan trong ThanhLySach trước (nếu có)
+                DatabaseHelper.ExecuteNonQuery("DELETE FROM ThanhLySach WHERE IDCaTheSach = @id", new SqlParameter[] { new SqlParameter("@id", idCaTheSach) });
+                
+                // Xóa cá thể sách
+                DatabaseHelper.ExecuteNonQuery("DELETE FROM CaTheSach WHERE IDCaTheSach = @id", new SqlParameter[] { new SqlParameter("@id", idCaTheSach) });
+
+                UpdateBookCount();
+                MessageBox.Show("Đã xóa cá thể sách thành công.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                LoadCaTheSach(currentIDSach);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Hãy chọn một cá thể sách để thanh lý.");
+                MessageBox.Show("Lỗi khi xóa sách: " + ex.Message + "\nSách có thể đã có lịch sử mượn trả không thể xóa.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

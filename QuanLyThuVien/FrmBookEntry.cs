@@ -439,32 +439,38 @@ namespace QuanLyThuVien
             if (_viewingMasterId == null)
             {
                 // CHẾ ĐỘ MASTER: Hiển thị ThongTinSach
-                dgvBooks.Columns.Add("IDSach", "Mã Sách");
-                dgvBooks.Columns.Add("TenSach", "Tên Sách");
-                dgvBooks.Columns.Add("TacGia", "Tác Giả");
-                dgvBooks.Columns.Add("NhaXuatBan", "Nhà XB");
-                dgvBooks.Columns.Add("NamXuatBan", "Năm XB");
-                dgvBooks.Columns.Add("SoLuong", "SL");
-                dgvBooks.Columns.Add("TheLoai", "Đầu Sách");
+                dgvBooks.Columns.Add("IDSach", "Mã sách");
+                dgvBooks.Columns.Add("TenSach", "Tên sách");
+                dgvBooks.Columns.Add("TacGia", "Tác giả");
+                dgvBooks.Columns.Add("NamXuatBan", "Năm xuất bản");
+                dgvBooks.Columns.Add("NhaXuatBan", "Nhà xuất bản");
+                dgvBooks.Columns.Add("GiaBan", "Trị giá");
+                dgvBooks.Columns.Add("GiaThue", "Giá thuê");
+                dgvBooks.Columns.Add("IDDauSach", "Đầu sách");
+                dgvBooks.Columns.Add("SoLuong", "Số lượng");
 
                 dgvBooks.Columns["IDSach"].DataPropertyName = "IDSach";
                 dgvBooks.Columns["TenSach"].DataPropertyName = "TenSach";
                 dgvBooks.Columns["TacGia"].DataPropertyName = "TacGia";
-                dgvBooks.Columns["NhaXuatBan"].DataPropertyName = "NhaXuatBan";
                 dgvBooks.Columns["NamXuatBan"].DataPropertyName = "NamXuatBan";
+                dgvBooks.Columns["NhaXuatBan"].DataPropertyName = "NhaXuatBan";
+                dgvBooks.Columns["GiaBan"].DataPropertyName = "GiaBan";
+                dgvBooks.Columns["GiaThue"].DataPropertyName = "GiaThue";
+                dgvBooks.Columns["IDDauSach"].DataPropertyName = "IDDauSach";
                 dgvBooks.Columns["SoLuong"].DataPropertyName = "SoLuong";
-                dgvBooks.Columns["TheLoai"].DataPropertyName = "TheLoai";
                 
                 btnBack.Visible = false;
             }
             else
             {
                 // CHẾ ĐỘ DETAIL: Hiển thị CaTheSach của 1 cuốn
-                dgvBooks.Columns.Add("IDCaTheSach", "Mã Cá Thể");
-                dgvBooks.Columns.Add("NgayNhap", "Ngày Nhập");
-                dgvBooks.Columns.Add("TinhTrang", "Tình Trạng");
+                dgvBooks.Columns.Add("IDCaTheSach", "Mã cá thể sách");
+                dgvBooks.Columns.Add("IDSach", "Mã sách");
+                dgvBooks.Columns.Add("NgayNhap", "Ngày nhập");
+                dgvBooks.Columns.Add("TinhTrang", "Tình trạng");
 
                 dgvBooks.Columns["IDCaTheSach"].DataPropertyName = "IDCaTheSach";
+                dgvBooks.Columns["IDSach"].DataPropertyName = "IDSach";
                 dgvBooks.Columns["NgayNhap"].DataPropertyName = "NgayNhap";
                 dgvBooks.Columns["TinhTrang"].DataPropertyName = "TinhTrang";
 
@@ -472,7 +478,6 @@ namespace QuanLyThuVien
                 btnBack.Text = "← Quay lại: " + _viewingMasterId;
             }
 
-            dgvBooks.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvBooks.MultiSelect = false;
             dgvBooks.ReadOnly = true;
@@ -554,7 +559,7 @@ namespace QuanLyThuVien
             LoadData();
         }
 
-        private void LoadData()
+        public void LoadData() // Changed from private to public
         {
             try
             {
@@ -562,8 +567,8 @@ namespace QuanLyThuVien
                 if (_viewingMasterId == null)
                 {
                     // LOAD MASTER
-                    string sql = @"SELECT s.IDSach, s.TenSach, s.TacGia, s.NhaXuatBan, s.NamXuatBan, s.SoLuong, 
-                                 d.TenDauSach AS TheLoai
+                    string sql = @"SELECT s.IDSach, s.TenSach, s.TacGia, s.NhaXuatBan, s.NamXuatBan, s.SoLuong, s.GiaBan, s.GiaThue,
+                                 ISNULL(d.TenDauSach, s.IDDauSach) AS TheLoai
                                  FROM ThongTinSach s 
                                  LEFT JOIN DauSach d ON s.IDDauSach = d.IDDauSach 
                                  ORDER BY s.IDSach DESC";
@@ -572,7 +577,7 @@ namespace QuanLyThuVien
                 else
                 {
                     // LOAD DETAIL
-                    string sql = @"SELECT IDCaTheSach, NgayNhap, TinhTrang 
+                    string sql = @"SELECT IDCaTheSach, IDSach, NgayNhap, TinhTrang 
                                  FROM CaTheSach 
                                  WHERE IDSach = @mid 
                                  ORDER BY IDCaTheSach ASC";
@@ -594,17 +599,20 @@ namespace QuanLyThuVien
                             r["IDSach"]?.ToString()?.Trim(),
                             r["TenSach"]?.ToString()?.Trim(),
                             r["TacGia"]?.ToString()?.Trim(),
-                            r["NhaXuatBan"]?.ToString()?.Trim(),
                             r["NamXuatBan"],
-                            r["SoLuong"],
-                            r["TheLoai"]?.ToString()?.Trim());
+                            r["NhaXuatBan"]?.ToString()?.Trim(),
+                            r["GiaBan"],
+                            r["GiaThue"],
+                            r["TheLoai"]?.ToString()?.Trim(),
+                            r["SoLuong"]);
                     }
                     else
                     {
                         string status = GetStatusText(r["TinhTrang"]?.ToString());
                         dgvBooks.Rows.Add(
                             r["IDCaTheSach"]?.ToString()?.Trim(),
-                            Convert.ToDateTime(r["NgayNhap"]).ToString("dd/MM/yyyy"),
+                            r["IDSach"]?.ToString()?.Trim(),
+                            r["NgayNhap"] != DBNull.Value ? Convert.ToDateTime(r["NgayNhap"]).ToString("dd/MM/yyyy") : "",
                             status);
                     }
                 }

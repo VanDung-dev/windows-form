@@ -82,11 +82,12 @@ namespace QuanLyThuVien
             dgvBooks.Columns.Add("IDSach", "Mã sách");
             dgvBooks.Columns.Add("TenSach", "Tên sách");
             dgvBooks.Columns.Add("TacGia", "Tác giả");
+            dgvBooks.Columns.Add("NamXuatBan", "Năm xuất bản");
             dgvBooks.Columns.Add("NhaXuatBan", "Nhà xuất bản");
-            dgvBooks.Columns.Add("NamXuatBan", "Năm XB");
             dgvBooks.Columns.Add("GiaBan", "Trị giá");
             dgvBooks.Columns.Add("GiaThue", "Giá thuê");
-            dgvBooks.Columns.Add("DauSach", "Đầu Sách");
+            dgvBooks.Columns.Add("IDDauSach", "Đầu sách");
+            dgvBooks.Columns.Add("SoLuong", "Số lượng");
             dgvBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvBooks.MultiSelect = false;
             dgvBooks.DoubleClick += DataGridView1_DoubleClick;
@@ -98,7 +99,7 @@ namespace QuanLyThuVien
             dgvBooks.AutoGenerateColumns = false;
             dgvBooks.Columns.Add("IDCaTheSach", "Mã cá thể sách");
             dgvBooks.Columns.Add("IDSach", "Mã sách");
-            dgvBooks.Columns.Add("TenSach", "Tên sách"); // Add TenSach explicitly
+            dgvBooks.Columns.Add("NgayNhap", "Ngày nhập");
             dgvBooks.Columns.Add("TinhTrang", "Tình trạng");
             dgvBooks.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvBooks.MultiSelect = false;
@@ -108,7 +109,7 @@ namespace QuanLyThuVien
         {
             try
             {
-                string sql = "SELECT s.IDSach, s.TenSach, s.TacGia, s.NhaXuatBan, s.NamXuatBan, s.GiaBan, s.GiaThue, ISNULL(d.TenDauSach, s.IDDauSach) AS DauSach " +
+                string sql = "SELECT s.IDSach, s.TenSach, s.TacGia, s.NhaXuatBan, s.NamXuatBan, s.GiaBan, s.GiaThue, s.SoLuong, ISNULL(d.TenDauSach, s.IDDauSach) AS DauSach " +
                              "FROM ThongTinSach s " +
                              "LEFT JOIN DauSach d ON s.IDDauSach = d.IDDauSach";
                 if (!string.IsNullOrWhiteSpace(whereClause))
@@ -123,11 +124,12 @@ namespace QuanLyThuVien
                         r["IDSach"]?.ToString()?.Trim(),
                         r["TenSach"]?.ToString()?.Trim(),
                         r["TacGia"]?.ToString()?.Trim(),
-                        r["NhaXuatBan"]?.ToString()?.Trim(),
                         r["NamXuatBan"],
+                        r["NhaXuatBan"]?.ToString()?.Trim(),
                         r["GiaBan"],
                         r["GiaThue"],
-                        r["DauSach"]?.ToString()?.Trim()
+                        r["DauSach"]?.ToString()?.Trim(),
+                        r["SoLuong"]
                     );
                 }
             }
@@ -141,7 +143,7 @@ namespace QuanLyThuVien
         {
             try
             {
-                string sql = "SELECT c.IDCaTheSach, c.IDSach, s.TenSach, c.TinhTrang " +
+                string sql = "SELECT c.IDCaTheSach, c.IDSach, c.NgayNhap, c.TinhTrang " +
                              "FROM CaTheSach c " +
                              "INNER JOIN ThongTinSach s ON c.IDSach = s.IDSach "
                              ;
@@ -167,7 +169,7 @@ namespace QuanLyThuVien
                     dgvBooks.Rows.Add(
                         r["IDCaTheSach"]?.ToString()?.Trim(),
                         r["IDSach"]?.ToString()?.Trim(),
-                        r["TenSach"]?.ToString()?.Trim(),
+                        r["NgayNhap"] != DBNull.Value ? Convert.ToDateTime(r["NgayNhap"]).ToString("dd/MM/yyyy") : "",
                         r["TinhTrang"]?.ToString()?.Trim()
                     );
                 }
